@@ -777,59 +777,97 @@ def get_cached_analysis(url, input_data):
         st.error(f"처리 중 오류가 발생했습니다: {str(e)}")
         return None
 
-def create_login_form():
-    with st.form("instagram_login"):
-        st.write("### Instagram 로그인")
-        username = st.text_input("사용자명", type="default")
-        password = st.text_input("비밀번호", type="password")
-        submitted = st.form_submit_button("로그인")
-        
-        if submitted:
-            if username and password:
-                # 로그인 성공 여부 확인
-                try:
-                    ydl_opts = {
-                        'username': username,
-                        'password': password,
-                        'quiet': True,  # 불필요한 출력 숨김
-                    }
-                    # 로그인 정보만 저장하고 실제 테스트는 하지 않음
-                    return {"username": username, "password": password}
-                except Exception as e:
-                    st.error(f"로그인 실패: {str(e)}")
-                    return None
-            else:
-                st.error("사용자명과 비밀번호를 입력해주세요.")
-                return None
-    return None
-
-def process_url(input_data, username, password):
-    url = input_data.get("url", "")
-    if not url:
-        st.warning("URL을 입력해주세요.")
-        return None
-        
-    # URL 유효성 검사
-    if not is_valid_instagram_url(url):
-        st.error("올바른 Instagram URL을 입력해주세요.")
-        return None
+def main():
+    st.title("✨ 릴스 벤치마킹 스튜디오")
     
-    # 비디오 URL 가져오기 (로그인 정보 전달)
-    video_url = get_video_url(url, username, password)
-    if video_url:
-        # 비디오 표시
-        st.video(video_url)
+    # 폼 데이터를 세션 상태로 관리
+    if 'form_data' not in st.session_state:
+        st.session_state.form_data = {
+            'transcript': '',
+            'caption': '',
+            'video_intro_copy': '',
+            'video_intro_structure': '',
+            'narration': '',
+            'music': '',
+            'font': ''
+        }
+    
+    # 바로 영상 분석 폼 표시
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        st.markdown("""
+            <div class="analysis-header">
+                <span class="section-number">📊</span>
+                영상 분석
+            </div>
+        """, unsafe_allow_html=True)
         
-        # 릴스 정보 추출
-        reels_info = extract_reels_info(url, username=username, password=password)
-        if isinstance(reels_info, str) and reels_info.startswith("Error"):
-            st.error(reels_info)
-            return None
-            
-        if reels_info:
-            return {
-                "url": url,
+        # 새로 추가: 스크립트와 캡션 입력란
+        st.text_area(
+            "**스크립트 입력**",
+            value=st.session_state.form_data.get('transcript', ''),
+            height=100,
+            help="영상의 스크립트를 입력해주세요"
+        )
+        
+        st.text_area(
+            "**캡션 입력**",
+            value=st.session_state.form_data.get('caption', ''),
+            height=100,
+            help="영상의 캡션을 입력해주세요"
+        )
+    
+    with col2:
+        # 기존 입력란 유지
+        st.text_area(
+            "**초반 3초 (카피라이팅) 설명**",
+            value=st.session_state.form_data['video_intro_copy'],
+            height=68,
+            help="1. 🎯 구체적 수치\n2. 🧠 뇌 충격\n3. 💡 이익/손해 강조\n4. 👑 권위 강조"
+        )
+        
+        st.text_area(
+            "**초반 3초 (영상 구성) 설명**",
+            value=st.session_state.form_data['video_intro_structure'],
+            height=68,
+            help="1. 💥 상식 파괴\n2. 🎬 결과 먼저 보여주기\n3. ⚠️ 부정적 상황 강조\n4. 🤝 공감 유도"
+        )
+        
+        st.text_input(
+            "**나레이션 설명**",
+            value=st.session_state.form_data['narration'],
+            help="목소리 특징, 말하기 스타일, 음질 상태"
+        )
+        
+        st.text_input(
+            "**음악 설명**",
+            value=st.session_state.form_data['music'],
+            help="트렌디한 정도, 영상과의 조화, 장르 및 템포"
+        )
+        
+        st.text_input(
+            "**폰트 설명**",
+            value=st.session_state.form_data['font'],
+            help="폰트 종류, 강조 요소, 가독성 정도"
+        )
+
+    # 내 콘텐츠 정보 입력 섹션
+    st.markdown("""
+        <div class="section-header">
+            <span class="section-number">2</span>
+            내 콘텐츠 정보 입력
+        </div>
+    """, unsafe_allow_html=True)
+    topic = st.text_area("제작할 콘텐츠에 대해 자유롭게 입력해주세요", height=68)
+    
+    # 분석 시작 버튼
+    if st.button("분석 시작"):
+        with st.spinner("분석 중... (약 2분 소요)"):
+            results = get_cached_analysis("", {
                 "video_analysis": {
+                    "transcript": st.session_state.form_data.get('transcript', ''),
+                    "caption": st.session_state.form_data.get('caption', ''),
                     "intro_copy": st.session_state.form_data['video_intro_copy'],
                     "intro_structure": st.session_state.form_data['video_intro_structure'],
                     "narration": st.session_state.form_data['narration'],
@@ -837,33 +875,12 @@ def process_url(input_data, username, password):
                     "font": st.session_state.form_data['font']
                 },
                 "content_info": {
-                    "topic": input_data.get("content_info", {}).get("topic", "")
+                    "topic": topic
                 }
-            }
-    else:
-        st.error("Instagram URL에서 동영상을 찾을 수 없습니다.")
-    
-    return None
-
-def main():
-    st.title("✨ 릴스 벤치마킹 스튜디오")
-    
-    # 로그인 처리
-    if "instagram_credentials" not in st.session_state:
-        credentials = create_login_form()
-        if credentials:
-            st.session_state.instagram_credentials = credentials
-            st.rerun()
-    
-    # 로그인된 경우에만 메인 기능 표시
-    if "instagram_credentials" in st.session_state:
-        input_data = create_input_form()
-        if input_data:
-            result = process_url(input_data, 
-                               st.session_state.instagram_credentials["username"],
-                               st.session_state.instagram_credentials["password"])
-            if result:
-                display_results(result)
+            })
+            
+            if results:
+                display_analysis_results(results["analysis"], results["reels_info"])
 
 if __name__ == "__main__":
     main() 
