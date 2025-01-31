@@ -356,6 +356,22 @@ def create_input_form():
                         </div>
                     """, unsafe_allow_html=True)
                     
+                    # 새로 추가: 스크립트와 캡션 입력란
+                    st.text_area(
+                        "**스크립트 입력**",
+                        value=st.session_state.form_data.get('transcript', ''),
+                        height=100,
+                        help="영상의 스크립트를 입력해주세요"
+                    )
+                    
+                    st.text_area(
+                        "**캡션 입력**",
+                        value=st.session_state.form_data.get('caption', ''),
+                        height=100,
+                        help="영상의 캡션을 입력해주세요"
+                    )
+                    
+                    # 기존 입력란 유지
                     st.text_area(
                         "**초반 3초 (카피라이팅) 설명**",
                         value=st.session_state.form_data['video_intro_copy'],
@@ -406,7 +422,17 @@ def create_input_form():
                     )
                     
                     # 폼 제출 버튼
-                    st.form_submit_button("분석 내용 저장")
+                    if st.form_submit_button("분석 내용 저장"):
+                        st.session_state.form_data.update({
+                            'transcript': st.session_state.form_data.get('transcript', ''),
+                            'caption': st.session_state.form_data.get('caption', ''),
+                            'video_intro_copy': st.session_state.form_data['video_intro_copy'],
+                            'video_intro_structure': st.session_state.form_data['video_intro_structure'],
+                            'narration': st.session_state.form_data['narration'],
+                            'music': st.session_state.form_data['music'],
+                            'font': st.session_state.form_data['font']
+                        })
+                        st.success("분석 내용이 저장되었습니다!")
             
             # URL이 입력되고 동영상이 성공적으로 로드된 경우에만 나머지 섹션 표시
             st.markdown("""
