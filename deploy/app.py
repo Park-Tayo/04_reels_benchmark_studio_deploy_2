@@ -12,7 +12,6 @@ import openai
 import re
 import time
 from urllib.parse import urlparse
-import yt_dlp
 
 # .env 파일 로드
 load_dotenv()
