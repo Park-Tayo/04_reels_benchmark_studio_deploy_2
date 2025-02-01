@@ -723,9 +723,8 @@ def main():
     # 캡션과 나레이션 섹션
     st.markdown('<div class="input-label" style="font-weight: bold;">📝 캡션과 나레이션</div>', unsafe_allow_html=True)
     
-    st.markdown('캡션 ([숏부스트 링크](https://shortboost.com/))', unsafe_allow_html=False)
     caption = st.text_area(
-        label="",  # 라벨을 비워두고 위의 markdown으로 대체
+        label="캡션", 
         value=st.session_state.form_data.get('caption', ''),
         height=100,
         help="1. 📝 게시물 하단에 작성된 설명글\n"
@@ -735,9 +734,8 @@ def main():
         key="caption"
     )
     
-    st.markdown('나레이션 ([숏부스트 링크](https://shortboost.com/))', unsafe_allow_html=False)
     narration = st.text_area(
-        label="",  # 라벨을 비워두고 위의 markdown으로 대체
+        label="나레이션",  
         value=st.session_state.form_data.get('transcript', ''),
         height=100,
         help="1. 🎙️ 영상에서 말하는 내용을 그대로 작성\n"
