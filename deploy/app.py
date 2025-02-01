@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 import json
 from datetime import datetime
-from reels_extraction import extract_reels_info
+from reels_extraction import extract_reels_info, analyze_with_gpt4
 import os
 from dotenv import load_dotenv
 from api_config import get_api_config
