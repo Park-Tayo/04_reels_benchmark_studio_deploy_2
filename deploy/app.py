@@ -372,53 +372,58 @@ def create_input_form():
                     )
                     
                     # 기존 입력란 유지
-                    st.text_area(
-                        "**초반 3초 (카피라이팅) 설명**",
+                    intro_copy = st.text_area(
+                        "카피라이팅",
                         value=st.session_state.form_data['video_intro_copy'],
-                        height=68,
+                        height=100,
                         help="1. 🎯 구체적 수치 ('월 500만원', '3일 만에' 등)\n"
                              "2. 🧠 뇌 충격 ('망하는 과정', '실패한 이유' 등)\n"
                              "3. 💡 이익/손해 강조 ('놓치면 후회', '꼭 알아야 할' 등)\n"
                              "4. 👑 권위 강조 ('현직 대기업 임원', '10년 경력' 등)\n"
-                             "5. ✨ 예시: '현직 인사팀장이 알려주는 연봉 3천 협상법'"
+                             "5. ✨ 예시: '현직 인사팀장이 알려주는 연봉 3천 협상법'",
+                        key="intro_copy"
                     )
                     
-                    st.text_area(
-                        "**초반 3초 (영상 구성) 설명**",
+                    intro_structure = st.text_area(
+                        "영상 구성",
                         value=st.session_state.form_data['video_intro_structure'],
-                        height=68,
+                        height=100,
                         help="1. 💥 상식 파괴 (예상 밖의 장면)\n"
                              "2. 🎬 결과 먼저 보여주기 (Before & After)\n"
                              "3. ⚠️ 부정적 상황 강조\n"
                              "4. 🤝 공감 유도 (일상적 고민/불편함)\n"
-                             "5. 📱 예시: '출근 시간에 편하게 누워서 일하는 직원들 모습'"
+                             "5. 📱 예시: '출근 시간에 편하게 누워서 일하는 직원들 모습'",
+                        key="intro_structure"
                     )
                     
-                    st.text_input(
-                        "**나레이션 설명**",
+                    narration = st.text_input(
+                        "나레이션",
                         value=st.session_state.form_data['narration'],
                         help="1. 🎤 목소리 특징 (성별, 연령대, 톤)\n"
                              "2. 💬 말하기 스타일 (전문적/친근한)\n"
                              "3. 🎵 음질 상태 (노이즈 없는 깨끗한 음질)\n"
-                             "4. ✅️ 예시: '20대 여성의 친근한 톤, 깨끗한 마이크 음질'"
+                             "4. ✅️ 예시: '20대 여성의 친근한 톤, 깨끗한 마이크 음질'",
+                        key="narration"
                     )
                     
-                    st.text_input(
-                        "**음악 설명**",
+                    music = st.text_input(
+                        "배경음악",
                         value=st.session_state.form_data['music'],
                         help="1. 🎵 트렌디한 정도 (최신 유행 BGM)\n"
                              "2. 🎶 영상과의 조화 (리듬감, 분위기)\n"
                              "3. 🎼 장르 및 템포\n"
-                             "4. 🎧 예시: '트렌디한 K-pop, 영상의 템포와 잘 맞는 리듬'"
+                             "4. 🎧 예시: '트렌디한 K-pop, 영상의 템포와 잘 맞는 리듬'",
+                        key="music"
                     )
                     
-                    st.text_input(
-                        "**폰트 설명**",
+                    font = st.text_input(
+                        "사용 폰트",
                         value=st.session_state.form_data['font'],
                         help="1. 📝 폰트 종류 (고딕체, 손글씨체 등)\n"
                              "2. ✒️ 강조 요소 (굵기, 크기, 테두리)\n"
                              "3. 👀 가독성 정도\n"
-                             "4. 💫 예시: '눈에 띄는 굵은 글씨, 흰색 테두리, 노란색 배경'"
+                             "4. 💫 예시: '눈에 띄는 굵은 글씨, 흰색 테두리, 노란색 배경'",
+                        key="font"
                     )
                     
                     # 폼 제출 버튼
@@ -778,102 +783,9 @@ def get_cached_analysis(url, input_data):
         return None
 
 def main():
-    st.markdown("""
-        <style>
-        /* 전체 컨테이너 스타일 */
-        .main {
-            background-color: #FFFFFF;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* 입력 필드 컨테이너 스타일 */
-        .input-container {
-            background-color: #F8F9FA;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid #E9ECEF;
-        }
-        
-        /* 텍스트 영역 스타일링 */
-        .stTextArea textarea {
-            border-radius: 10px !important;
-            border: 2px solid #E9ECEF !important;
-            padding: 12px !important;
-            font-size: 15px !important;
-            background-color: white !important;
-            min-height: 120px !important;
-        }
-        
-        .stTextArea textarea:focus {
-            border-color: #405DE6 !important;
-            box-shadow: 0 0 0 2px rgba(64,93,230,0.2) !important;
-        }
-        
-        /* 텍스트 입력 필드 스타일링 */
-        .stTextInput input {
-            border-radius: 10px !important;
-            border: 2px solid #E9ECEF !important;
-            padding: 12px !important;
-            font-size: 15px !important;
-            background-color: white !important;
-            height: 45px !important;
-        }
-        
-        .stTextInput input:focus {
-            border-color: #405DE6 !important;
-            box-shadow: 0 0 0 2px rgba(64,93,230,0.2) !important;
-        }
-        
-        /* 섹션 헤더 스타일링 */
-        .section-header {
-            color: #1E1E1E;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #F1F3F5;
-        }
-        
-        /* 라벨 스타일링 */
-        .input-label {
-            font-weight: 600;
-            color: #1E1E1E;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        /* 도움말 텍스트 스타일링 */
-        .help-text {
-            color: #6C757D;
-            font-size: 0.9rem;
-            margin-top: 0.25rem;
-        }
-        
-        /* 분석 시작 버튼 스타일링 */
-        .stButton button {
-            background: linear-gradient(45deg, #405DE6, #5851DB) !important;
-            color: white !important;
-            padding: 0.75rem 2rem !important;
-            border-radius: 10px !important;
-            border: none !important;
-            font-weight: 600 !important;
-            width: 100% !important;
-            margin-top: 1rem !important;
-            transition: transform 0.2s ease !important;
-        }
-        
-        .stButton button:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(64,93,230,0.2) !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
     st.title("✨ 릴스 벤치마킹 스튜디오")
     
+    # 폼 데이터를 세션 상태로 관리
     if 'form_data' not in st.session_state:
         st.session_state.form_data = {
             'transcript': '',
@@ -885,103 +797,109 @@ def main():
             'font': ''
         }
     
-    # 메인 분석 섹션
-    st.markdown('<div class="section-header">📊 영상 분석</div>', unsafe_allow_html=True)
+    # 바로 영상 분석 폼 표시
+    col1, col2 = st.columns([1, 1])
     
-    with st.container():
-        col1, col2 = st.columns([1, 1])
+    with col1:
+        st.markdown("""
+            <div class="analysis-header">
+                <span class="section-number">📊</span>
+                영상 분석
+            </div>
+        """, unsafe_allow_html=True)
         
-        with col1:
-            st.markdown('<div class="input-container">', unsafe_allow_html=True)
-            st.markdown('<div class="input-label">📝 스크립트</div>', unsafe_allow_html=True)
-            transcript = st.text_area(
-                "",
-                value=st.session_state.form_data.get('transcript', ''),
-                height=150,
-                help="영상의 스크립트를 입력해주세요",
-                key="transcript"
-            )
-            
-            st.markdown('<div class="input-label">✍️ 캡션</div>', unsafe_allow_html=True)
-            caption = st.text_area(
-                "",
-                value=st.session_state.form_data.get('caption', ''),
-                height=150,
-                help="영상의 캡션을 입력해주세요",
-                key="caption"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown('<div class="input-container">', unsafe_allow_html=True)
-            st.markdown('<div class="input-label">⚡ 초반 3초 분석</div>', unsafe_allow_html=True)
-            
-            intro_copy = st.text_area(
-                "카피라이팅",
-                value=st.session_state.form_data['video_intro_copy'],
-                height=100,
-                help="🎯 구체적 수치 | 🧠 뇌 충격 | 💡 이익/손해 강조 | 👑 권위 강조",
-                key="intro_copy"
-            )
-            
-            intro_structure = st.text_area(
-                "영상 구성",
-                value=st.session_state.form_data['video_intro_structure'],
-                height=100,
-                help="💥 상식 파괴 | 🎬 결과 먼저 | ⚠️ 부정 강조 | 🤝 공감 유도",
-                key="intro_structure"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            st.markdown('<div class="input-container">', unsafe_allow_html=True)
-            st.markdown('<div class="input-label">🎨 스타일 분석</div>', unsafe_allow_html=True)
-            
-            narration = st.text_input(
-                "나레이션",
-                value=st.session_state.form_data['narration'],
-                help="목소리 특징, 말하기 스타일, 음질 상태",
-                key="narration"
-            )
-            
-            music = st.text_input(
-                "배경음악",
-                value=st.session_state.form_data['music'],
-                help="트렌디한 정도, 영상과의 조화, 장르 및 템포",
-                key="music"
-            )
-            
-            font = st.text_input(
-                "사용 폰트",
-                value=st.session_state.form_data['font'],
-                help="폰트 종류, 강조 요소, 가독성 정도",
-                key="font"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-    
-    # 내 콘텐츠 정보 입력 섹션
-    st.markdown('<div class="section-header">✏️ 내 콘텐츠 정보</div>', unsafe_allow_html=True)
-    with st.container():
-        st.markdown('<div class="input-container">', unsafe_allow_html=True)
-        topic = st.text_area(
-            "제작할 콘텐츠 주제",
+        # 새로 추가: 스크립트와 캡션 입력란
+        st.text_area(
+            "**스크립트 입력**",
+            value=st.session_state.form_data.get('transcript', ''),
             height=100,
-            help="벤치마킹하여 제작하고 싶은 콘텐츠의 주제나 내용을 자유롭게 입력해주세요",
-            key="topic"
+            help="영상의 스크립트를 입력해주세요"
         )
-        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.text_area(
+            "**캡션 입력**",
+            value=st.session_state.form_data.get('caption', ''),
+            height=100,
+            help="영상의 캡션을 입력해주세요"
+        )
+    
+    with col2:
+        # 기존 입력란 유지
+        intro_copy = st.text_area(
+            "카피라이팅",
+            value=st.session_state.form_data['video_intro_copy'],
+            height=100,
+            help="1. 🎯 구체적 수치 ('월 500만원', '3일 만에' 등)\n"
+                 "2. 🧠 뇌 충격 ('망하는 과정', '실패한 이유' 등)\n"
+                 "3. 💡 이익/손해 강조 ('놓치면 후회', '꼭 알아야 할' 등)\n"
+                 "4. 👑 권위 강조 ('현직 대기업 임원', '10년 경력' 등)\n"
+                 "5. ✨ 예시: '현직 인사팀장이 알려주는 연봉 3천 협상법'",
+            key="intro_copy"
+        )
+        
+        intro_structure = st.text_area(
+            "영상 구성",
+            value=st.session_state.form_data['video_intro_structure'],
+            height=100,
+            help="1. 💥 상식 파괴 (예상 밖의 장면)\n"
+                 "2. 🎬 결과 먼저 보여주기 (Before & After)\n"
+                 "3. ⚠️ 부정적 상황 강조\n"
+                 "4. 🤝 공감 유도 (일상적 고민/불편함)\n"
+                 "5. 📱 예시: '출근 시간에 편하게 누워서 일하는 직원들 모습'",
+            key="intro_structure"
+        )
+        
+        narration = st.text_input(
+            "나레이션",
+            value=st.session_state.form_data['narration'],
+            help="1. 🎤 목소리 특징 (성별, 연령대, 톤)\n"
+                 "2. 💬 말하기 스타일 (전문적/친근한)\n"
+                 "3. 🎵 음질 상태 (노이즈 없는 깨끗한 음질)\n"
+                 "4. ✅️ 예시: '20대 여성의 친근한 톤, 깨끗한 마이크 음질'",
+            key="narration"
+        )
+        
+        music = st.text_input(
+            "배경음악",
+            value=st.session_state.form_data['music'],
+            help="1. 🎵 트렌디한 정도 (최신 유행 BGM)\n"
+                 "2. 🎶 영상과의 조화 (리듬감, 분위기)\n"
+                 "3. 🎼 장르 및 템포\n"
+                 "4. 🎧 예시: '트렌디한 K-pop, 영상의 템포와 잘 맞는 리듬'",
+            key="music"
+        )
+        
+        font = st.text_input(
+            "사용 폰트",
+            value=st.session_state.form_data['font'],
+            help="1. 📝 폰트 종류 (고딕체, 손글씨체 등)\n"
+                 "2. ✒️ 강조 요소 (굵기, 크기, 테두리)\n"
+                 "3. 👀 가독성 정도\n"
+                 "4. 💫 예시: '눈에 띄는 굵은 글씨, 흰색 테두리, 노란색 배경'",
+            key="font"
+        )
+
+    # 내 콘텐츠 정보 입력 섹션
+    st.markdown("""
+        <div class="section-header">
+            <span class="section-number">2</span>
+            내 콘텐츠 정보 입력
+        </div>
+    """, unsafe_allow_html=True)
+    topic = st.text_area("제작할 콘텐츠에 대해 자유롭게 입력해주세요", height=68)
     
     # 분석 시작 버튼
-    if st.button("✨ 벤치마킹 분석 시작", key="analyze_button"):
+    if st.button("분석 시작"):
         with st.spinner("분석 중... (약 2분 소요)"):
             results = get_cached_analysis("", {
                 "video_analysis": {
-                    "transcript": transcript,
-                    "caption": caption,
-                    "intro_copy": intro_copy,
-                    "intro_structure": intro_structure,
-                    "narration": narration,
-                    "music": music,
-                    "font": font
+                    "transcript": st.session_state.form_data.get('transcript', ''),
+                    "caption": st.session_state.form_data.get('caption', ''),
+                    "intro_copy": st.session_state.form_data['video_intro_copy'],
+                    "intro_structure": st.session_state.form_data['video_intro_structure'],
+                    "narration": st.session_state.form_data['narration'],
+                    "music": st.session_state.form_data['music'],
+                    "font": st.session_state.form_data['font']
                 },
                 "content_info": {
                     "topic": topic
