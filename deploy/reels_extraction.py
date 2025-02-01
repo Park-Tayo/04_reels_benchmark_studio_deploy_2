@@ -30,21 +30,11 @@ def timer_decorator(func):
 
 @timer_decorator
 def extract_reels_info(url, video_analysis):
-    """
-    사용자 입력 기반으로 릴스 정보를 구성합니다.
-    """
-    try:
-        # 사용자가 입력한 정보를 그대로 활용
-        reels_info = {
-            'caption': video_analysis.get('caption', ''),
-            'refined_transcript': video_analysis.get('transcript', '')
-        }
-        
-        return reels_info
-            
-    except Exception as e:
-        print(f"\n오류 발생: {str(e)}")
-        return f"Error: {str(e)}"
+    """사용자 입력 기반으로 릴스 정보를 구성합니다."""
+    return {
+        'caption': video_analysis.get('caption', ''),
+        'refined_transcript': video_analysis.get('transcript', '')
+    }
 
 def analyze_with_gpt4(info, input_data):
     """GPT를 사용하여 릴스 분석을 수행합니다."""
@@ -55,7 +45,7 @@ def analyze_with_gpt4(info, input_data):
         messages = [
             {
                 "role": "system",
-                "content": """당신은 릴스 분석 전문가입니다..."""  # 기존 프롬프트 유지
+                "content": """당신은 릴스 분석 전문가입니다..."""
             },
             {
                 "role": "user",
@@ -81,7 +71,7 @@ def analyze_with_gpt4(info, input_data):
             model="gpt-4o",
             messages=messages,
             temperature=0,
-            max_tokens=2000
+            max_tokens=10000
         )
         
         return response.choices[0].message.content.strip()

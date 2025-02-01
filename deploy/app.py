@@ -712,46 +712,23 @@ def display_progress():
 def get_cached_analysis(url, input_data):
     try:
         progress_placeholder = display_progress()
-        start_time = time.time()
         
-        def update_progress(current_time):
-            progress = min(int((current_time - start_time) / 10) * 10, 100)
-            status = "🔄 분석 진행 중..." if progress < 100 else "✨ 분석 완료!"
-            progress_placeholder.markdown(f"""
-                <div class="step-container">
-                    <div class="progress-label">{status}</div>
-                </div>
-            """, unsafe_allow_html=True)
-            progress_placeholder.progress(progress)
-            return progress
-        
-        # 주기적으로 진행 상태 업데이트
-        while True:
-            current_time = time.time()
-            progress = update_progress(current_time)
-            if progress >= 100:
-                break
-            time.sleep(1)
-        
-        # URL 관련 로직 제거하고 사용자 입력만 처리
+        # 1. 불필요한 진행률 업데이트 제거
         reels_info = extract_reels_info(url, input_data['video_analysis'])
         if isinstance(reels_info, str):
             st.error(f"정보 추출 실패: {reels_info}")
             return None
+        
+        # 2. 실제 분석 진행
+        progress_placeholder.progress(50)  # 중간 진행상태 표시
         
         analysis = analyze_with_gpt4(reels_info, input_data)
         if "error" in str(analysis).lower():
             st.error(f"AI 분석 실패: {analysis}")
             return None
         
-        # 완료 표시
-        progress_placeholder.markdown("""
-            <div class="step-container">
-                <div class="progress-label">✨ 분석 완료!</div>
-            </div>
-        """, unsafe_allow_html=True)
+        # 3. 완료 표시
         progress_placeholder.progress(100)
-        time.sleep(1)
         progress_placeholder.empty()
         
         return {
