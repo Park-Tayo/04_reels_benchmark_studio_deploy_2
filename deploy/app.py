@@ -448,13 +448,28 @@ def create_input_form():
             topic = st.text_area("제작할 콘텐츠에 대해 자유롭게 입력해주세요", height=68)
             
             # 분석 시작 버튼
-            if st.button("분석 시작"):
-                if not url:
-                    st.warning("URL을 입력해주세요.")
-                    return None
+            st.markdown("""
+                <style>
+                div.stButton > button {
+                    width: 100%;
+                    background: linear-gradient(45deg, #405DE6, #5851DB) !important;
+                    color: white !important;
+                    border: none !important;
+                    border-radius: 12px !important;
+                    padding: 0.5rem 2rem !important;
+                    font-weight: 600 !important;
+                    transition: all 0.3s ease !important;
+                }
                 
+                div.stButton > button:hover {
+                    transform: translateY(-2px) !important;
+                    box-shadow: 0 4px 12px rgba(64,93,230,0.2) !important;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+            
+            if st.button("✨ 벤치마킹 분석 시작", key="analyze_button"):
                 with st.spinner("분석 중... (약 2분 소요)"):
-                    # 캐시된 결과 확인
                     results = get_cached_analysis(url, {
                         "url": url,
                         "video_analysis": {
@@ -642,40 +657,12 @@ def display_analysis_results(results, reels_info):
         </style>
     """, unsafe_allow_html=True)
 
-    # 1. 릴스 정보
+    # 분석 결과 타이틀
     st.markdown('<div class="benchmark-analysis-title">📊 분석 결과</div>', unsafe_allow_html=True)
     
-    st.markdown('<div class="subsection-title">📱 릴스 정보</div>', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown('<div class="info-title">📌 기본 정보</div>', unsafe_allow_html=True)
-        st.write(f"- 🗓️ 업로드 날짜: {reels_info['date']}")
-        st.markdown(f"- 👤 계정: <a href='https://www.instagram.com/{reels_info['owner']}' target='_blank'>@{reels_info['owner']}</a>", unsafe_allow_html=True)
-        st.write(f"- ⏱️ 영상 길이: {reels_info['video_duration']:.1f}초")
-    
-    with col2:
-        st.markdown('<div class="info-title">📈 시청 반응</div>', unsafe_allow_html=True)
-        st.write(f"- 👀 조회수: {format(reels_info['view_count'], ',')}회")
-        st.write(f"- ❤️ 좋아요: {format(reels_info['likes'], ',')}개")
-        st.write(f"- 💬 댓글: {format(reels_info['comments'], ',')}개")
-    
-    # 2. 스크립트와 캡션
-    st.markdown('<div class="subsection-title">📝 콘텐츠 내용</div>', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown('<div class="info-title">🎙️ 스크립트</div>', unsafe_allow_html=True)
-        st.write(reels_info["refined_transcript"])
-    with col2:
-        st.markdown('<div class="info-title">✍️ 캡션</div>', unsafe_allow_html=True)
-        st.write(reels_info["caption"])
-    
-    # 3. GPT 분석 결과
-    st.markdown('<div class="benchmark-analysis-title">🤖 벤치마킹 템플릿 분석</div>', unsafe_allow_html=True)
-    
-    # 벤치마킹 기획 섹션을 분리
+    # GPT 분석 결과
     analysis_parts = results.split("# 6. 벤치마킹 적용 기획:")
-    main_analysis = analysis_parts[0]  # 메인 분석 부분
+    main_analysis = analysis_parts[0]
     
     # GPT 분석 결과를 마크다운으로 변환하여 이모티콘 추가
     analysis_text = main_analysis.replace("# 1. 주제:", "# 🎯 1. 주제:")
@@ -787,93 +774,21 @@ def main():
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        /* 입력 필드 컨테이너 스타일 */
-        .input-container {
-            background-color: #F8F9FA;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid #E9ECEF;
-        }
-        
-        /* 텍스트 영역 스타일링 */
-        .stTextArea textarea {
-            border-radius: 10px !important;
-            border: 2px solid #E9ECEF !important;
-            padding: 12px !important;
-            font-size: 15px !important;
-            background-color: white !important;
-            min-height: 120px !important;
-        }
-        
-        .stTextArea textarea:focus {
-            border-color: #405DE6 !important;
-            box-shadow: 0 0 0 2px rgba(64,93,230,0.2) !important;
-        }
-        
-        /* 텍스트 입력 필드 스타일링 */
-        .stTextInput input {
-            border-radius: 10px !important;
-            border: 2px solid #E9ECEF !important;
-            padding: 12px !important;
-            font-size: 15px !important;
-            background-color: white !important;
-            height: 45px !important;
-        }
-        
-        .stTextInput input:focus {
-            border-color: #405DE6 !important;
-            box-shadow: 0 0 0 2px rgba(64,93,230,0.2) !important;
-        }
-        
-        /* 섹션 헤더 스타일링 */
-        .section-header {
-            color: #1E1E1E;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #F1F3F5;
+        /* 메인 타이틀 스타일 수정 */
+        .main-title {
             text-align: center;
-        }
-        
-        /* 라벨 스타일링 */
-        .input-label {
-            font-weight: 600;
-            color: #1E1E1E;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        /* 도움말 텍스트 스타일링 */
-        .help-text {
-            color: #6C757D;
-            font-size: 0.9rem;
-            margin-top: 0.25rem;
-        }
-        
-        /* 분석 시작 버튼 스타일링 */
-        .stButton button {
-            background: linear-gradient(45deg, #405DE6, #5851DB) !important;
-            color: white !important;
-            padding: 0.75rem 2rem !important;
-            border-radius: 10px !important;
-            border: none !important;
-            font-weight: 600 !important;
-            width: 100% !important;
-            margin-top: 1rem !important;
-            transition: transform 0.2s ease !important;
-        }
-        
-        .stButton button:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(64,93,230,0.2) !important;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin: 2rem 0;
+            padding: 1rem 0;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    st.title("✨ 릴스 벤치마킹 스튜디오")
-    
+    # 타이틀을 중앙 정렬된 div로 감싸기
+    st.markdown('<div class="main-title">✨ 릴스 벤치마킹 스튜디오</div>', unsafe_allow_html=True)
+
     if 'form_data' not in st.session_state:
         st.session_state.form_data = {
             'transcript': '',
@@ -886,68 +801,78 @@ def main():
         }
 
     # 간격 추가
-    st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
 
     # 메인 분석 섹션
     st.markdown('<div class="section-header" style="text-align: center;">📊 영상 분석</div>', unsafe_allow_html=True)
     
-    with st.container():
-        col1, col2 = st.columns([1, 1])
-        
-        with col1:
-            st.markdown('<div class="input-label">📝 캡션과 나레이션</div>', unsafe_allow_html=True)
-            
-            caption = st.text_area(
-                "캡션",
-                value=st.session_state.form_data.get('caption', ''),
-                height=100,
-                help="1. 📝 게시물 하단에 작성된 설명글\n"
-                     "2. #️⃣ 해시태그 포함\n"
-                     "3. 📌 핵심 내용 요약\n"
-                     "4. ✨ 예시: '직장인 부업으로 월 500 벌기 꿀팁 대방출 🔥\n\n이것만 알면 누구나 가능합니다.\n\n#부업 #투잡 #재테크'",
-                key="caption"
-            )
-            
-            narration = st.text_area(
-                "나레이션",
-                value=st.session_state.form_data.get('transcript', ''),
-                height=100,
-                help="1. 🎙️ 영상에서 말하는 내용을 그대로 작성\n"
-                     "2. 💬 나레이션, 자막 모두 포함\n"
-                     "3. 🔄 시간 순서대로 작성\n"
-                     "4. ✨ 예시: '안녕하세요. 오늘은 직장인 부업으로 \n\n월 500만원 버는 방법을 알려드립니다.'",
-                key="transcript"
-            )
-        
-        with col2:
-            st.markdown('<div class="input-label">⚡ 초반 3초 분석</div>', unsafe_allow_html=True)
-            
-            intro_copy = st.text_area(
-                "카피라이팅",
-                value=st.session_state.form_data['video_intro_copy'],
-                height=100,
-                help="1. 🎯 구체적 수치 ('월 500만원', '3일 만에' 등)\n"
-                     "2. 🧠 뇌 충격 ('망하는 과정', '실패한 이유' 등)\n"
-                     "3. 💡 이익/손해 강조 ('놓치면 후회', '꼭 알아야 할' 등)\n"
-                     "4. 👑 권위 강조 ('현직 대기업 임원', '10년 경력' 등)\n"
-                     "5. ✨ 예시: '현직 인사팀장이 알려주는 연봉 3천 협상법'",
-                key="intro_copy"
-            )
-            
-            intro_structure = st.text_area(
-                "영상 구성",
-                value=st.session_state.form_data['video_intro_structure'],
-                height=100,
-                help="1. 💥 상식 파괴 (예상 밖의 장면)\n"
-                     "2. 🎬 결과 먼저 보여주기 (Before & After)\n"
-                     "3. ⚠️ 부정적 상황 강조\n"
-                     "4. 🤝 공감 유도 (일상적 고민/불편함)\n"
-                     "5. 📱 예시: '출근 시간에 편하게 누워서 일하는 직원들 모습'",
-                key="intro_structure"
-            )
+    # 캡션과 나레이션 섹션
+    st.markdown('<div class="input-label" style="font-weight: bold;">📝 캡션과 나레이션</div>', unsafe_allow_html=True)
     
+
+    caption = st.text_area(
+        "캡션",
+        value=st.session_state.form_data.get('caption', ''),
+        height=100,
+        help="1. 📝 게시물 하단에 작성된 설명글\n"
+             "2. #️⃣ 해시태그 포함\n"
+             "3. 📌 핵심 내용 요약\n"
+             "4. ✨ 예시: '직장인 부업으로 월 500 벌기 꿀팁 대방출 🔥\n\n이것만 알면 누구나 가능합니다.\n\n#부업 #투잡 #재테크'",
+        key="caption"
+    )
+    
+    narration = st.text_area(
+        "나레이션",
+        value=st.session_state.form_data.get('transcript', ''),
+        height=100,
+        help="1. 🎙️ 영상에서 말하는 내용을 그대로 작성\n"
+             "2. 💬 나레이션, 자막 모두 포함\n"
+             "3. 🔄 시간 순서대로 작성\n"
+             "4. ✨ 예시: '안녕하세요. 오늘은 직장인 부업으로 \n\n월 500만원 버는 방법을 알려드립니다.'",
+        key="transcript"
+    )
+    
+    # 초반 3초 분석 섹션
+    st.markdown('<div class="input-label" style="font-weight: bold;">⚡ 초반 3초 분석</div>', unsafe_allow_html=True)
+    
+
+    intro_copy = st.text_area(
+        "카피라이팅",
+        value=st.session_state.form_data['video_intro_copy'],
+        height=68,
+        help="1. 🎯 구체적 수치 ('월 500만원', '3일 만에' 등)\n"
+             "2. 🧠 뇌 충격 ('망하는 과정', '실패한 이유' 등)\n"
+             "3. 💡 이익/손해 강조 ('놓치면 후회', '꼭 알아야 할' 등)\n"
+             "4. 👑 권위 강조 ('현직 대기업 임원', '10년 경력' 등)\n"
+             "5. ✨ 예시: '현직 인사팀장이 알려주는 연봉 3천 협상법'",
+        key="intro_copy"
+    )
+    
+    intro_structure = st.text_area(
+        "영상 구성",
+        value=st.session_state.form_data['video_intro_structure'],
+        height=68,
+        help="1. 💥 상식 파괴 (예상 밖의 장면)\n"
+             "2. 🎬 결과 먼저 보여주기 (Before & After)\n"
+             "3. ⚠️ 부정적 상황 강조\n"
+             "4. 🤝 공감 유도 (일상적 고민/불편함)\n"
+             "5. 📱 예시: '출근 시간에 편하게 누워서 일하는 직원들 모습'",
+        key="intro_structure"
+    )
+
     # 스타일 분석 섹션 (전체 너비 사용)
-    st.markdown('<div class="input-label">🎨 스타일 분석</div>', unsafe_allow_html=True)
+    st.markdown('<div class="input-label" style="font-weight: bold;">🎨 스타일 분석</div>', unsafe_allow_html=True)
+    
+
+    narration_style = st.text_input(
+        "나레이션 스타일",
+        value=st.session_state.form_data['narration'],
+        help="1. 🎤 목소리 특징 (성별, 연령대, 톤)\n"
+             "2. 💬 말하기 스타일 (전문적/친근한)\n"
+             "3. 🎵 음질 상태 (노이즈 없는 깨끗한 음질)\n"
+             "4. ✅️ 예시: '20대 여성의 친근한 톤, 깨끗한 마이크 음질'",
+        key="narration"
+    )
     
     music = st.text_input(
         "배경음악",
@@ -982,6 +907,26 @@ def main():
     )
     
     # 분석 시작 버튼
+    st.markdown("""
+        <style>
+        div.stButton > button {
+            width: 100%;
+            background: linear-gradient(45deg, #405DE6, #5851DB) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 0.5rem 2rem !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        div.stButton > button:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(64,93,230,0.2) !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
     if st.button("✨ 벤치마킹 분석 시작", key="analyze_button"):
         with st.spinner("분석 중... (약 2분 소요)"):
             results = get_cached_analysis("", {

@@ -37,13 +37,7 @@ def extract_reels_info(url, video_analysis):
         # 사용자가 입력한 정보를 그대로 활용
         reels_info = {
             'caption': video_analysis.get('caption', ''),
-            'refined_transcript': video_analysis.get('transcript', ''),
-            'date': datetime.now().strftime('%Y-%m-%d'),  # 현재 날짜 사용
-            'owner': 'user_input',  # 기본값 설정
-            'video_duration': 0,  # 기본값 설정
-            'view_count': 0,      # 기본값 설정
-            'likes': 0,           # 기본값 설정
-            'comments': 0         # 기본값 설정
+            'refined_transcript': video_analysis.get('transcript', '')
         }
         
         return reels_info
