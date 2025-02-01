@@ -506,6 +506,29 @@ def create_input_form():
     }
 
 @st.cache_data(ttl=3600)
+def get_cached_analysis(input_data):
+    """
+    분석 결과를 캐싱하고 반환하는 함수
+    """
+    try:
+        # 릴스 정보 추출
+        reels_info = {
+            'refined_transcript': input_data['video_analysis']['transcript'],
+            'caption': input_data['video_analysis']['caption']
+        }
+        
+        # GPT-4를 사용한 분석
+        analysis = analyze_with_gpt4(reels_info, input_data)
+        
+        return {
+            "analysis": analysis,
+            "reels_info": reels_info
+        }
+    except Exception as e:
+        st.error(f"분석 중 오류가 발생했습니다: {str(e)}")
+        return None
+
+@st.cache_data(ttl=3600)
 def analyze_with_gpt4(info, input_data):
         api_config = get_api_config()
         client = openai.OpenAI(api_key=api_config["api_key"])
@@ -800,10 +823,9 @@ def main():
     font = st.text_input(
         "사용 폰트",
         value=st.session_state.form_data['font'],
-        help="1. 📝 폰트 종류 (고딕체, 손글씨체 등)\n"
-             "2. ✒️ 강조 요소 (굵기, 크기, 테두리)\n"
-             "3. 👀 가독성 정도\n"
-             "4. 💫 예시: '눈에 띄는 굵은 글씨, 흰색 테두리, 노란색 배경'",
+        help="1. ✒️ 강조 요소 (굵기, 크기, 테두리)\n"
+             "2. 👀 가독성 정도\n"
+             "3. 💫 예시: '눈에 띄는 굵은 글씨, 흰색 테두리, 노란색 배경'",
         key="font"
     )
     
