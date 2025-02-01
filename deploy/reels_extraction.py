@@ -1,14 +1,8 @@
-import tempfile
+import openai
 import os
 from pathlib import Path
-import subprocess
-import openai
+import tempfile
 from api_config import get_api_config
-import time
-from functools import wraps
-import requests
-from datetime import datetime
-import json
 
 # 상대 경로로 변경 (스트림릿 클라우드 호환)
 BASE_DIR = Path(__file__).parent.parent
@@ -16,24 +10,6 @@ BASE_DIR = Path(__file__).parent.parent
 # 임시 파일 디렉토리 설정
 TEMP_DIR = Path(tempfile.gettempdir()) / "reels_benchmark"
 os.makedirs(TEMP_DIR, exist_ok=True)
-
-def timer_decorator(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        print(f"[Timer] {func.__name__}: {end_time - start_time:.2f}초")
-        return result
-    return wrapper
-
-@timer_decorator
-def extract_reels_info(url, video_analysis):
-    """사용자 입력 기반으로 릴스 정보를 구성합니다."""
-    return {
-        'caption': video_analysis.get('caption', ''),
-        'refined_transcript': video_analysis.get('transcript', '')
-    }
 
 def analyze_with_gpt4(info, input_data):
     """GPT를 사용하여 릴스 분석을 수행합니다."""
