@@ -898,21 +898,26 @@ def main():
         
         with col1:
             st.markdown('<div class="input-container">', unsafe_allow_html=True)
-            st.markdown('<div class="input-label">📝 스크립트</div>', unsafe_allow_html=True)
+            st.markdown('<div class="input-label">✍️ 스크립트 및 캡션</div>', unsafe_allow_html=True)
             transcript = st.text_area(
-                "",
+                "스크립트",
                 value=st.session_state.form_data.get('transcript', ''),
-                height=150,
-                help="영상의 스크립트를 입력해주세요",
+                height=100,
+                help="1. 🎙️ 영상에서 말하는 내용을 그대로 작성\n"
+                     "2. 💬 나레이션, 자막 모두 포함\n"
+                     "3. 🔄 시간 순서대로 작성\n"
+                     "4. ✨ 예시: '안녕하세요. 오늘은 직장인 부업으로 월 500만원 버는 방법을 알려드립니다.'",
                 key="transcript"
             )
             
-            st.markdown('<div class="input-label">✍️ 캡션</div>', unsafe_allow_html=True)
             caption = st.text_area(
-                "",
+                "캡션",
                 value=st.session_state.form_data.get('caption', ''),
-                height=150,
-                help="영상의 캡션을 입력해주세요",
+                height=100,
+                help="1. 📝 게시물 하단에 작성된 설명글\n"
+                     "2. #️⃣ 해시태그 포함\n"
+                     "3. 📌 핵심 내용 요약\n"
+                     "4. ✨ 예시: '직장인 부업으로 월 500 벌기 꿀팁 대방출 🔥\n\n이것만 알면 누구나 가능합니다.\n\n#부업 #투잡 #재테크'",
                 key="caption"
             )
             st.markdown('</div>', unsafe_allow_html=True)
