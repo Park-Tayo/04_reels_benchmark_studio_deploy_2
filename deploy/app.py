@@ -216,7 +216,7 @@ st.markdown("""
     <div class="brand-logo">HANSHIN GROUP</div>
 """, unsafe_allow_html=True)
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=3600, show_spinner=False)
 def get_cached_analysis(input_data):
     """
     분석 결과를 캐싱하고 반환하는 함수
