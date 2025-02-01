@@ -469,8 +469,7 @@ def create_input_form():
             
             if st.button("✨ 벤치마킹 분석 시작", key="analyze_button"):
                 with st.spinner("분석 중... (약 30초 소요)"):
-                    results = get_cached_analysis(url, {
-                        "url": url,
+                    results = get_cached_analysis({
                         "video_analysis": {
                             "intro_copy": st.session_state.form_data['video_intro_copy'],
                             "intro_structure": st.session_state.form_data['video_intro_structure'],
@@ -505,12 +504,12 @@ def create_input_form():
     }
 
 @st.cache_data(ttl=3600, show_spinner=True)
-def get_cached_analysis(url, input_data):
+def get_cached_analysis(input_data):
     try:
-        reels_info = extract_reels_info(url, input_data['video_analysis'])
-        if isinstance(reels_info, str):
-            st.error(f"정보 추출 실패: {reels_info}")
-            return None
+        reels_info = {
+            'caption': input_data['video_analysis'].get('caption', ''),
+            'refined_transcript': input_data['video_analysis'].get('transcript', '')
+        }
         
         analysis = analyze_with_gpt4(reels_info, input_data)
         if "error" in str(analysis).lower():
@@ -740,7 +739,7 @@ def main():
                     "caption": caption,
                     "intro_copy": intro_copy,
                     "intro_structure": intro_structure,
-                    "narration": narration,
+                    "narration": narration_style,
                     "music": music,
                     "font": font
                 },
