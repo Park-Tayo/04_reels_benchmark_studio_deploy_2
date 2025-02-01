@@ -471,11 +471,13 @@ def create_input_form():
                 with st.spinner("분석 중... (약 30초 소요)"):
                     results = get_cached_analysis({
                         "video_analysis": {
-                            "intro_copy": st.session_state.form_data['video_intro_copy'],
-                            "intro_structure": st.session_state.form_data['video_intro_structure'],
-                            "narration": st.session_state.form_data['narration'],
-                            "music": st.session_state.form_data['music'],
-                            "font": st.session_state.form_data['font']
+                            "transcript": narration,
+                            "caption": caption,
+                            "intro_copy": intro_copy,
+                            "intro_structure": intro_structure,
+                            "narration": narration_style,
+                            "music": music,
+                            "font": font
                         },
                         "content_info": {
                             "topic": topic
@@ -732,8 +734,8 @@ def main():
     """, unsafe_allow_html=True)
     
     if st.button("✨ 벤치마킹 분석 시작", key="analyze_button"):
-        with st.spinner("분석 중... (약 2분 소요)"):
-            results = get_cached_analysis("", {
+        with st.spinner("분석 중... (약 30초 소요)"):
+            results = get_cached_analysis({
                 "video_analysis": {
                     "transcript": narration,
                     "caption": caption,
