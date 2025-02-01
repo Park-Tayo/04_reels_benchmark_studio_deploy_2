@@ -66,14 +66,13 @@ st.markdown("""
     
     /* 섹션 헤더 */
     .section-header {
-        margin: 2.5rem 0 1.5rem 0;
-        padding: 0;
-        color: #1c1c1e;
+        color: #1E1E1E;
         font-size: 1.5rem;
         font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #F1F3F5;
+        text-align: center;
     }
     
     .section-number {
@@ -840,6 +839,7 @@ def main():
             margin-bottom: 1.5rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid #F1F3F5;
+            text-align: center;
         }
         
         /* 라벨 스타일링 */
@@ -889,26 +889,18 @@ def main():
             'music': '',
             'font': ''
         }
-    
+
+    # 간격 추가
+    st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
+
     # 메인 분석 섹션
-    st.markdown('<div class="section-header">📊 영상 분석</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header" style="text-align: center;">📊 영상 분석</div>', unsafe_allow_html=True)
     
     with st.container():
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            st.markdown('<div class="input-container">', unsafe_allow_html=True)
-            st.markdown('<div class="input-label">✍️ 스크립트 및 캡션</div>', unsafe_allow_html=True)
-            transcript = st.text_area(
-                "스크립트",
-                value=st.session_state.form_data.get('transcript', ''),
-                height=100,
-                help="1. 🎙️ 영상에서 말하는 내용을 그대로 작성\n"
-                     "2. 💬 나레이션, 자막 모두 포함\n"
-                     "3. 🔄 시간 순서대로 작성\n"
-                     "4. ✨ 예시: '안녕하세요. 오늘은 직장인 부업으로 월 500만원 버는 방법을 알려드립니다.'",
-                key="transcript"
-            )
+            st.markdown('<div class="input-label">📝 나레이션과 캡션</div>', unsafe_allow_html=True)
             
             caption = st.text_area(
                 "캡션",
@@ -920,10 +912,19 @@ def main():
                      "4. ✨ 예시: '직장인 부업으로 월 500 벌기 꿀팁 대방출 🔥\n\n이것만 알면 누구나 가능합니다.\n\n#부업 #투잡 #재테크'",
                 key="caption"
             )
-            st.markdown('</div>', unsafe_allow_html=True)
+            
+            narration = st.text_area(
+                "나레이션",
+                value=st.session_state.form_data.get('transcript', ''),
+                height=100,
+                help="1. 🎙️ 영상에서 말하는 내용을 그대로 작성\n"
+                     "2. 💬 나레이션, 자막 모두 포함\n"
+                     "3. 🔄 시간 순서대로 작성\n"
+                     "4. ✨ 예시: '안녕하세요. 오늘은 직장인 부업으로 월 500만원 버는 방법을 알려드립니다.'",
+                key="transcript"
+            )
         
         with col2:
-            st.markdown('<div class="input-container">', unsafe_allow_html=True)
             st.markdown('<div class="input-label">⚡ 초반 3초 분석</div>', unsafe_allow_html=True)
             
             intro_copy = st.text_area(
@@ -949,64 +950,51 @@ def main():
                      "5. 📱 예시: '출근 시간에 편하게 누워서 일하는 직원들 모습'",
                 key="intro_structure"
             )
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            st.markdown('<div class="input-container">', unsafe_allow_html=True)
-            st.markdown('<div class="input-label">🎨 스타일 분석</div>', unsafe_allow_html=True)
-            
-            narration = st.text_input(
-                "나레이션",
-                value=st.session_state.form_data['narration'],
-                help="1. 🎤 목소리 특징 (성별, 연령대, 톤)\n"
-                     "2. 💬 말하기 스타일 (전문적/친근한)\n"
-                     "3. 🎵 음질 상태 (노이즈 없는 깨끗한 음질)\n"
-                     "4. ✅️ 예시: '20대 여성의 친근한 톤, 깨끗한 마이크 음질'",
-                key="narration"
-            )
-            
-            music = st.text_input(
-                "배경음악",
-                value=st.session_state.form_data['music'],
-                help="1. 🎵 트렌디한 정도 (최신 유행 BGM)\n"
-                     "2. 🎶 영상과의 조화 (리듬감, 분위기)\n"
-                     "3. 🎼 장르 및 템포\n"
-                     "4. 🎧 예시: '트렌디한 K-pop, 영상의 템포와 잘 맞는 리듬'",
-                key="music"
-            )
-            
-            font = st.text_input(
-                "사용 폰트",
-                value=st.session_state.form_data['font'],
-                help="1. 📝 폰트 종류 (고딕체, 손글씨체 등)\n"
-                     "2. ✒️ 강조 요소 (굵기, 크기, 테두리)\n"
-                     "3. 👀 가독성 정도\n"
-                     "4. 💫 예시: '눈에 띄는 굵은 글씨, 흰색 테두리, 노란색 배경'",
-                key="font"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
     
+    # 스타일 분석 섹션 (전체 너비 사용)
+    st.markdown('<div class="input-label">🎨 스타일 분석</div>', unsafe_allow_html=True)
+    
+    music = st.text_input(
+        "배경음악",
+        value=st.session_state.form_data['music'],
+        help="1. 🎵 트렌디한 정도 (최신 유행 BGM)\n"
+             "2. 🎶 영상과의 조화 (리듬감, 분위기)\n"
+             "3. 🎼 장르 및 템포\n"
+             "4. 🎧 예시: '트렌디한 K-pop, 영상의 템포와 잘 맞는 리듬'",
+        key="music"
+    )
+    
+    font = st.text_input(
+        "사용 폰트",
+        value=st.session_state.form_data['font'],
+        help="1. 📝 폰트 종류 (고딕체, 손글씨체 등)\n"
+             "2. ✒️ 강조 요소 (굵기, 크기, 테두리)\n"
+             "3. 👀 가독성 정도\n"
+             "4. 💫 예시: '눈에 띄는 굵은 글씨, 흰색 테두리, 노란색 배경'",
+        key="font"
+    )
+    
+    # 간격 추가
+    st.markdown("<div style='margin-top: 70px;'></div>", unsafe_allow_html=True)
+
     # 내 콘텐츠 정보 입력 섹션
-    st.markdown('<div class="section-header">✏️ 내 콘텐츠 정보</div>', unsafe_allow_html=True)
-    with st.container():
-        st.markdown('<div class="input-container">', unsafe_allow_html=True)
-        topic = st.text_area(
-            "제작할 콘텐츠 주제",
-            height=100,
-            help="벤치마킹하여 제작하고 싶은 콘텐츠의 주제나 내용을 자유롭게 입력해주세요",
-            key="topic"
-        )
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header" style="text-align: center;">✏️ 내 콘텐츠 정보</div>', unsafe_allow_html=True)
+    topic = st.text_area(
+        "제작할 콘텐츠 주제",
+        height=100,
+        help="벤치마킹하여 제작하고 싶은 콘텐츠의 주제나 내용을 자유롭게 입력해주세요",
+        key="topic"
+    )
     
     # 분석 시작 버튼
     if st.button("✨ 벤치마킹 분석 시작", key="analyze_button"):
         with st.spinner("분석 중... (약 2분 소요)"):
             results = get_cached_analysis("", {
                 "video_analysis": {
-                    "transcript": transcript,
+                    "transcript": narration,
                     "caption": caption,
                     "intro_copy": intro_copy,
                     "intro_structure": intro_structure,
-                    "narration": narration,
                     "music": music,
                     "font": font
                 },
