@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 import json
 from datetime import datetime
-from reels_extraction import download_video, extract_reels_info
+from reels_extraction import extract_reels_info
 import os
 from dotenv import load_dotenv
 from api_config import get_api_config
@@ -728,7 +728,7 @@ def get_cached_analysis(url, input_data):
         start_time = time.time()
         
         def update_progress(current_time):
-            progress = min(int((current_time - start_time) / 10) * 10, 100)  # 10초마다 10%씩 증가
+            progress = min(int((current_time - start_time) / 10) * 10, 100)
             status = "🔄 분석 진행 중..." if progress < 100 else "✨ 분석 완료!"
             progress_placeholder.markdown(f"""
                 <div class="step-container">
@@ -744,22 +744,17 @@ def get_cached_analysis(url, input_data):
             progress = update_progress(current_time)
             if progress >= 100:
                 break
-            time.sleep(1)  # 1초마다 업데이트
-            
-        # 메인 처리 로직
-        video_path = download_video(url)
-        if not video_path:
-            st.error("영상 다운로드에 실패했습니다. URL을 확인해주세요.")
-            return None
+            time.sleep(1)
         
+        # URL 관련 로직 제거하고 사용자 입력만 처리
         reels_info = extract_reels_info(url, input_data['video_analysis'])
         if isinstance(reels_info, str):
             st.error(f"정보 추출 실패: {reels_info}")
             return None
         
         analysis = analyze_with_gpt4(reels_info, input_data)
-        if "error" in analysis:
-            st.error(f"AI 분석 실패: {analysis['error']}")
+        if "error" in str(analysis).lower():
+            st.error(f"AI 분석 실패: {analysis}")
             return None
         
         # 완료 표시
@@ -900,7 +895,7 @@ def main():
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            st.markdown('<div class="input-label">📝 나레이션과 캡션</div>', unsafe_allow_html=True)
+            st.markdown('<div class="input-label">📝 캡션과 나레이션</div>', unsafe_allow_html=True)
             
             caption = st.text_area(
                 "캡션",
@@ -920,7 +915,7 @@ def main():
                 help="1. 🎙️ 영상에서 말하는 내용을 그대로 작성\n"
                      "2. 💬 나레이션, 자막 모두 포함\n"
                      "3. 🔄 시간 순서대로 작성\n"
-                     "4. ✨ 예시: '안녕하세요. 오늘은 직장인 부업으로 월 500만원 버는 방법을 알려드립니다.'",
+                     "4. ✨ 예시: '안녕하세요. 오늘은 직장인 부업으로 \n\n월 500만원 버는 방법을 알려드립니다.'",
                 key="transcript"
             )
         
@@ -995,6 +990,7 @@ def main():
                     "caption": caption,
                     "intro_copy": intro_copy,
                     "intro_structure": intro_structure,
+                    "narration": narration,
                     "music": music,
                     "font": font
                 },
